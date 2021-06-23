@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using WebApplication.Models;
+using WebApplication.Repository;
+using WebApplication.Services;
 
 namespace WebApplication
 {
@@ -33,6 +35,12 @@ namespace WebApplication
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebApplication", Version = "v1"});
             });
+
+            services.AddScoped<UserRepository>();
+            services.AddScoped<UserService>();
+
+            services.AddScoped<OrderRepository>();
+            services.AddScoped<OrderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
