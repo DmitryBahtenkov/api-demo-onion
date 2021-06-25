@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Dtos;
+using WebApplication.Models;
 using WebApplication.Services;
 
 namespace WebApplication.Controllers
@@ -29,6 +30,7 @@ namespace WebApplication.Controllers
         }
         
         [HttpPost]
+        [ProducesResponseType(typeof(User), 200)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
         {
             var resp = await _userService.CreateUser(dto);
