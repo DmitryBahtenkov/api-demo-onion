@@ -12,10 +12,12 @@ namespace WebApplication.Services
     public class OrderService
     {
         private readonly OrderRepository _orderRepository;
+        private readonly UserRepository _userRepository;
 
-        public OrderService(OrderRepository orderRepository)
+        public OrderService(OrderRepository orderRepository, UserRepository userRepository)
         {
             _orderRepository = orderRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<ResponseDto<Order>> Create(CreateOrderDto dto)
@@ -24,6 +26,13 @@ namespace WebApplication.Services
             if (!string.IsNullOrEmpty(validResp))
             {
                 return new ResponseDto<Order>() {Error = validResp};
+            }
+
+            var user = await _userRepository.ById(dto.UserId);
+
+            if (user is null)
+            {
+                return new ResponseDto<Order>() {Error = "Пользователь не найден"};
             }
 
             var order = new Order()

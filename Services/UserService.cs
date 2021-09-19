@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 using WebApplication.Dtos;
 using WebApplication.Extensions;
 using WebApplication.Models;
@@ -47,6 +51,19 @@ namespace WebApplication.Services
                 LastName = dto.LastName,
                 MiddleName = dto.MiddleName
             };
+
+            var identity = GetIdentity(user);
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                issuer: AuthOptions.ISSUER,
+                audience: AuthOptions.AUDIENCE,
+                notBefore: now,
+                claims: identity.Claims,
+                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            user.Token = encodedJwt;
             
             return new ResponseDto<User>
             {
@@ -109,6 +126,19 @@ namespace WebApplication.Services
             {
                 IsSuccess = true
             };
+        }
+        
+        private ClaimsIdentity GetIdentity(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new (ClaimsIdentity.DefaultNameClaimType, user.Login),
+            };
+            var claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+            
+            return claimsIdentity;
         }
     }
 }

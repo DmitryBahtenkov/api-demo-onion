@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Dtos;
 using WebApplication.Dtos.Order;
@@ -7,7 +8,9 @@ using WebApplication.Services;
 
 namespace WebApplication.Controllers
 {
+    [ApiController]
     [Route("api/order")]
+    [Authorize]
     public class OrderController : ControllerBase
     {
 

@@ -18,6 +18,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(User), 200)]
         public async Task<IActionResult> GetUser(string login, string password)
         {
             var resp = await _userService.GetUser(login, password);
@@ -43,6 +44,7 @@ namespace WebApplication.Controllers
         }
         
         [HttpPut]
+        [ProducesResponseType(typeof(User), 200)]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto dto)
         {
             var resp = await _userService.UpdatePassword(dto);
